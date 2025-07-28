@@ -6,6 +6,7 @@ import (
 	"littlejumbo/guard/internal/objects/alien"
 	"littlejumbo/guard/internal/objects/player"
 	"littlejumbo/guard/internal/objects/shield"
+	"littlejumbo/guard/internal/ui/lives"
 	"littlejumbo/guard/internal/ui/score"
 
 	"github.com/mikabrytu/gomes-engine/render"
@@ -14,6 +15,7 @@ import (
 
 func Init() {
 	score.Init()
+	lives.Init()
 
 	drawPlayer()
 	drawAliens()
