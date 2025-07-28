@@ -6,12 +6,15 @@ import (
 	"littlejumbo/guard/internal/objects/alien"
 	"littlejumbo/guard/internal/objects/player"
 	"littlejumbo/guard/internal/objects/shield"
+	"littlejumbo/guard/internal/ui/score"
 
 	"github.com/mikabrytu/gomes-engine/render"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
 
 func Init() {
+	score.Init()
+
 	drawPlayer()
 	drawAliens()
 	drawShields()
