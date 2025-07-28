@@ -1,7 +1,9 @@
 package scene
 
 import (
+	"fmt"
 	"littlejumbo/guard/config"
+	"littlejumbo/guard/internal/objects/alien"
 	"littlejumbo/guard/internal/objects/player"
 
 	"github.com/mikabrytu/gomes-engine/render"
@@ -10,6 +12,7 @@ import (
 
 func Init() {
 	drawPlayer()
+	drawAliens()
 }
 
 func drawPlayer() {
@@ -21,4 +24,34 @@ func drawPlayer() {
 	}
 
 	player.New(config.OBJECT_PLAYER_NAME, rect, render.Green)
+}
+
+func drawAliens() {
+	rows := 5
+	cols := 11
+
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			x := 96 // TODO: Calculate this to ensure responsiveness
+			y := config.METRICS_UI_PANEL_HEIGHT
+
+			if j > 0 {
+				x += j * (config.METRICS_OBJECT_ALIEN_SIZE.X + config.METRICS_OBJECT_ALIEN_OFFSET)
+			}
+
+			if i > 0 {
+				y += i * (config.METRICS_OBJECT_ALIEN_SIZE.Y + config.METRICS_OBJECT_ALIEN_OFFSET)
+			}
+
+			name := fmt.Sprintf(config.OBJECT_ALIEN_NAME, i, j)
+			rect := utils.RectSpecs{
+				PosX:   x,
+				PosY:   y,
+				Width:  config.METRICS_OBJECT_ALIEN_SIZE.X,
+				Height: config.METRICS_OBJECT_ALIEN_SIZE.Y,
+			}
+
+			alien.New(name, rect, render.White)
+		}
+	}
 }
