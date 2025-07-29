@@ -30,7 +30,8 @@ func drawPlayer() {
 		Height: config.METRICS_PLAYER_SIZE.Y,
 	}
 
-	player.New(config.OBJECT_PLAYER_NAME, rect, render.Green)
+	player := player.New(config.OBJECT_PLAYER_NAME, rect, render.Green)
+	player.SetSpeed(config.OBJECT_PLAYER_SPEED)
 }
 
 func drawAliens() {
