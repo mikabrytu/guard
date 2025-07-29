@@ -31,6 +31,7 @@ func drawPlayer() {
 	}
 
 	player := player.New(config.OBJECT_PLAYER_NAME, rect, render.Green)
+	player.SetSprite(config.PATH_SPRITE_PLAYER)
 	player.SetSpeed(config.OBJECT_PLAYER_SPEED)
 }
 

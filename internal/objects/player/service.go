@@ -9,18 +9,27 @@ import (
 
 func New(name string, rect utils.RectSpecs, color render.Color) *Player {
 	player := &Player{
-		Name:  name,
-		Rect:  rect,
-		Color: color,
+		name:     name,
+		rect:     rect,
+		color:    color,
+		isSimple: true,
 	}
 
 	lifecycle.Register(&lifecycle.GameObject{
-		Start:  player.start,
-		Update: player.update,
-		Render: player.render,
+		Start:   player.start,
+		Update:  player.update,
+		Render:  player.render,
+		Destroy: player.destroy,
 	})
 
 	return player
+}
+
+func (p *Player) SetSprite(path string) {
+	p.isSimple = false
+
+	p.sprite = render.NewSprite(p.name, path)
+	p.sprite.Init(p.rect)
 }
 
 func (p *Player) SetSpeed(speed int) {
@@ -29,16 +38,24 @@ func (p *Player) SetSpeed(speed int) {
 
 func (p *Player) start() {
 	p.listen()
+
 }
 
 func (p *Player) update() {
 	if p.moving {
-		p.Rect.PosX += p.speed * p.axis
+		p.rect.PosX += p.speed * p.axis
+		p.sprite.UpdateRect(p.rect)
 	}
 }
 
 func (p *Player) render() {
-	render.DrawRect(p.Rect, p.Color)
+	if p.isSimple {
+		render.DrawRect(p.rect, p.color)
+	}
+}
+
+func (p *Player) destroy() {
+	p.sprite.ClearSprite()
 }
 
 func (p *Player) listen() {

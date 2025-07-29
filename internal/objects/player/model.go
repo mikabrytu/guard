@@ -6,10 +6,12 @@ import (
 )
 
 type Player struct {
-	Name   string
-	Rect   utils.RectSpecs
-	Color  render.Color
-	speed  int
-	axis   int
-	moving bool
+	name     string
+	rect     utils.RectSpecs
+	color    render.Color
+	sprite   *render.Sprite
+	speed    int
+	axis     int
+	moving   bool
+	isSimple bool
 }
