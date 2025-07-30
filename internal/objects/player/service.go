@@ -38,7 +38,6 @@ func (p *Player) SetSpeed(speed int) {
 
 func (p *Player) start() {
 	p.listen()
-
 }
 
 func (p *Player) update() {

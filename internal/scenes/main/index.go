@@ -83,6 +83,7 @@ func drawShields() {
 			Height: config.METRICS_OBJECT_SHIELD_SIZE.Y,
 		}
 
-		shield.New(name, rect, render.Green)
+		shield := shield.New(name, rect, render.Green)
+		shield.SetSprite(config.PATH_SPRITE_SHIELD)
 	}
 }

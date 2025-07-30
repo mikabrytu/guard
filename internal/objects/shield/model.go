@@ -6,7 +6,9 @@ import (
 )
 
 type Shield struct {
-	name  string
-	rect  utils.RectSpecs
-	color render.Color
+	name     string
+	rect     utils.RectSpecs
+	color    render.Color
+	sprite   *render.Sprite
+	isSimple bool
 }
