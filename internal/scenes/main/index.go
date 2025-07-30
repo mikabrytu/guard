@@ -60,7 +60,17 @@ func drawAliens() {
 				Height: config.METRICS_OBJECT_ALIEN_SIZE.Y,
 			}
 
-			alien.New(name, rect, render.White)
+			path := ""
+			if i == 0 {
+				path = config.PATH_SPRITE_ALIEN_C
+			} else if i < 3 {
+				path = config.PATH_SPRITE_ALIEN_B
+			} else {
+				path = config.PATH_SPRITE_ALIEN_A
+			}
+
+			alien := alien.New(name, rect, render.White)
+			alien.SetSprite(path)
 		}
 	}
 }
