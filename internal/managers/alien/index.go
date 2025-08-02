@@ -6,7 +6,6 @@ import (
 	"littlejumbo/guard/internal/objects/alien"
 	"time"
 
-	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/render"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
@@ -24,7 +23,6 @@ func Init() {
 	eventFired = false
 
 	draw()
-	listen()
 	move()
 }
 
@@ -70,23 +68,6 @@ func draw() {
 	}
 }
 
-func listen() {
-	events.Subscribe(config.EVENT_ALIEN_AT_SCREEN_BOUNDARY, func(params ...any) error {
-		if eventFired {
-			return nil
-		}
-
-		for _, row := range aliens {
-			for _, a := range row {
-				a.InvertDirectionX()
-			}
-		}
-
-		eventFired = true
-		return nil
-	})
-}
-
 func move() {
 	if eventFired {
 		eventFired = false
@@ -96,6 +77,16 @@ func move() {
 		for _, row := range aliens {
 			for _, a := range row {
 				a.MoveStep()
+			}
+		}
+
+		a := aliens[0][0]
+		b := aliens[0][COLS-1]
+		if a.IsAtScreenEdge() || b.IsAtScreenEdge() {
+			for _, row := range aliens {
+				for _, a := range row {
+					a.InvertDirectionX()
+				}
 			}
 		}
 

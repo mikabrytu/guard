@@ -3,7 +3,7 @@ package config
 import "github.com/mikabrytu/gomes-engine/math"
 
 var SCREEN_SIZE = math.Vector2{X: 624, Y: 608}
-var SCREEN_OFFSET = math.Vector2{X: 16, Y: 16}
+var SCREEN_OFFSET = math.Vector2{X: 32, Y: 32}
 
 const METRICS_UI_PANEL_HEIGHT int = 64
 const METRICS_UI_FONT_SIZE = 18
