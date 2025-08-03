@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"littlejumbo/guard/config"
 	"littlejumbo/guard/internal/objects/alien"
+	"regexp"
+	"strconv"
 	"time"
 
+	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
 
@@ -21,8 +24,17 @@ func Init() {
 	moving = true
 	skip = false
 
+	listen()
 	draw()
 	move()
+}
+
+func listen() {
+	events.Subscribe(config.EVENTS_ALIEN_DESTROYED, func(params ...any) error {
+		name := params[0].([]any)[0].([]any)[0].(string)
+		tryRemoveAlien(name)
+		return nil
+	})
 }
 
 func draw() {
@@ -95,10 +107,59 @@ func move() {
 	})
 }
 
+func tryRemoveAlien(name string) {
+	fmt.Println(size())
+
+	re := regexp.MustCompile("[0-9]+")
+	search := re.FindAllString(name, -1)
+
+	if len(search) != 2 {
+		fmt.Printf("Name %v is invalid.\n", name)
+		return
+	}
+
+	var err error
+	var index []int = make([]int, 2)
+	index[0], err = strconv.Atoi(search[0])
+	index[1], err = strconv.Atoi(search[1])
+
+	if err != nil {
+		panic(err)
+	}
+
+	alien := aliens[index[0]][index[1]]
+	if alien == nil {
+		fmt.Printf("Alien at coord %v not found\n", search)
+	} else {
+		aliens[index[0]][index[1]] = nil
+	}
+
+	fmt.Println(size())
+}
+
 func callFunc(callback func(*alien.Alien)) {
 	for _, row := range aliens {
 		for _, a := range row {
+			if a == nil {
+				continue
+			}
+
 			callback(a)
 		}
 	}
+}
+
+func size() int {
+	total := 0
+	for i := range ROWS {
+		for j := range COLS {
+			if aliens[i][j] == nil {
+				continue
+			}
+
+			total++
+		}
+	}
+
+	return total
 }
