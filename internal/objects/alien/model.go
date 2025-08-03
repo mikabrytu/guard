@@ -12,6 +12,6 @@ type Alien struct {
 	color    render.Color
 	sprite   *render.Sprite
 	axis     math.Vector2
-	step     int
+	step     math.Vector2
 	isSimple bool
 }

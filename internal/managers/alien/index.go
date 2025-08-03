@@ -12,7 +12,7 @@ import (
 
 var aliens [][]*alien.Alien
 var moving bool
-var eventFired bool
+var skip bool
 
 const MOVE_DELAY int = 1000
 const ROWS int = 5
@@ -20,7 +20,7 @@ const COLS int = 11
 
 func Init() {
 	moving = true
-	eventFired = false
+	skip = false
 
 	draw()
 	move()
@@ -69,29 +69,37 @@ func draw() {
 }
 
 func move() {
-	if eventFired {
-		eventFired = false
-	}
-
 	time.AfterFunc(time.Duration(MOVE_DELAY)*time.Millisecond, func() {
-		for _, row := range aliens {
-			for _, a := range row {
-				a.MoveStep()
+		if !skip {
+			a := aliens[0][0]
+			b := aliens[0][COLS-1]
+			if a.IsAtScreenEdge() || b.IsAtScreenEdge() {
+				callFunc(func(a *alien.Alien) {
+					a.InvertX()
+					a.DescendY()
+				})
+				skip = true
+				move()
+
+				return
 			}
 		}
 
-		a := aliens[0][0]
-		b := aliens[0][COLS-1]
-		if a.IsAtScreenEdge() || b.IsAtScreenEdge() {
-			for _, row := range aliens {
-				for _, a := range row {
-					a.InvertDirectionX()
-				}
-			}
-		}
+		callFunc(func(a *alien.Alien) {
+			a.MoveStep()
+		})
 
 		if moving {
+			skip = false
 			move()
 		}
 	})
+}
+
+func callFunc(callback func(*alien.Alien)) {
+	for _, row := range aliens {
+		for _, a := range row {
+			callback(a)
+		}
+	}
 }

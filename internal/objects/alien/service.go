@@ -33,17 +33,22 @@ func (a *Alien) SetSprite(path string) {
 	a.sprite.Init(a.rect)
 }
 
-func (a *Alien) SetStep(step int) {
+func (a *Alien) SetStep(step math.Vector2) {
 	a.step = step
 }
 
 func (a *Alien) MoveStep() {
-	a.rect.PosX += a.axis.X * a.step
+	a.rect.PosX += a.axis.X * a.step.X
 	a.sprite.UpdateRect(a.rect)
 }
 
-func (a *Alien) InvertDirectionX() {
+func (a *Alien) InvertX() {
 	a.axis.X *= -1
+}
+
+func (a *Alien) DescendY() {
+	a.rect.PosY += a.step.Y
+	a.sprite.UpdateRect(a.rect)
 }
 
 func (a *Alien) IsAtScreenEdge() bool {

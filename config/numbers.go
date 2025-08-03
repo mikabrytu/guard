@@ -19,7 +19,8 @@ var METRICS_PLAYER_SIZE = math.Vector2{X: 32, Y: 32}
 var METRICS_OBJECT_ALIEN_SIZE = math.Vector2{X: 32, Y: 32}
 var METRICS_OBJECT_SHIELD_SIZE = math.Vector2{X: 64, Y: 64}
 
+var OBJECT_ALIEN_STEP = math.Vector2{X: 16, Y: 16}
+
 const OBJECT_PLAYER_SPEED = 5
-const OBJECT_ALIEN_STEP = 15
 
 var VEC2_ZERO = math.Vector2{X: 0, Y: 0}
