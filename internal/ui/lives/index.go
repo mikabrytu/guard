@@ -20,14 +20,14 @@ func drawLives() {
 		x := config.METRICS_UI_PANEL_HEIGHT / 4
 
 		if i > 0 {
-			x += i * (config.METRICS_PLAYER_SIZE.X + config.METRICS_UI_LIVES_OFFSET)
+			x += i * (config.METRICS_OBJECT_PLAYER_SIZE.X + config.METRICS_UI_LIVES_OFFSET)
 		}
 
 		rect := utils.RectSpecs{
 			PosX:   x,
-			PosY:   config.SCREEN_SIZE.Y - config.METRICS_PLAYER_SIZE.Y - (config.METRICS_UI_PANEL_HEIGHT / 4),
-			Width:  config.METRICS_PLAYER_SIZE.X,
-			Height: config.METRICS_PLAYER_SIZE.Y,
+			PosY:   config.SCREEN_SIZE.Y - config.METRICS_OBJECT_PLAYER_SIZE.Y - (config.METRICS_UI_PANEL_HEIGHT / 4),
+			Width:  config.METRICS_OBJECT_PLAYER_SIZE.X,
+			Height: config.METRICS_OBJECT_PLAYER_SIZE.Y,
 		}
 
 		lifecycle.Register(&lifecycle.GameObject{

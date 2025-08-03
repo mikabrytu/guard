@@ -1,6 +1,11 @@
 package player
 
 import (
+	"fmt"
+	"littlejumbo/guard/config"
+	"littlejumbo/guard/internal/objects/bullet"
+	"time"
+
 	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/lifecycle"
 	"github.com/mikabrytu/gomes-engine/render"
@@ -85,6 +90,11 @@ func (p *Player) listen() {
 		}
 		return nil
 	})
+
+	events.Subscribe(events.INPUT_KEYBOARD_PRESSED_SPACE, func(params ...any) error {
+		p.shoot()
+		return nil
+	})
 }
 
 func (p *Player) move(axis int) {
@@ -95,4 +105,21 @@ func (p *Player) move(axis int) {
 	} else {
 		p.moving = true
 	}
+}
+
+// TODO: Make shoot system so a player object doesn't have a bullet dependency
+func (p *Player) shoot() {
+	stamp := time.Now()
+	name := fmt.Sprintf("bullet-%v", stamp)
+
+	rect := utils.RectSpecs{
+		PosX:   p.rect.PosX + ((config.METRICS_OBJECT_PLAYER_SIZE.X / 2) - (config.METRICS_OBJECT_BULLET_SIZE.X / 2)),
+		PosY:   p.rect.PosY,
+		Width:  config.METRICS_OBJECT_BULLET_SIZE.X,
+		Height: config.METRICS_OBJECT_BULLET_SIZE.Y,
+	}
+
+	bullet := bullet.New(name, rect, render.Green)
+	bullet.SetDirection(-1)
+	bullet.SetSpeed(config.OBJECT_BULLET_SPEED)
 }

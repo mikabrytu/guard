@@ -26,10 +26,10 @@ func Init() {
 
 func drawPlayer() {
 	rect := utils.RectSpecs{
-		PosX:   (config.SCREEN_SIZE.X / 2) - (config.METRICS_PLAYER_SIZE.X / 2),
-		PosY:   config.SCREEN_SIZE.Y - config.METRICS_UI_PANEL_HEIGHT - config.METRICS_OBJECT_PLAYER_OFFSET - config.METRICS_PLAYER_SIZE.Y,
-		Width:  config.METRICS_PLAYER_SIZE.X,
-		Height: config.METRICS_PLAYER_SIZE.Y,
+		PosX:   (config.SCREEN_SIZE.X / 2) - (config.METRICS_OBJECT_PLAYER_SIZE.X / 2),
+		PosY:   config.SCREEN_SIZE.Y - config.METRICS_UI_PANEL_HEIGHT - config.METRICS_OBJECT_PLAYER_OFFSET - config.METRICS_OBJECT_PLAYER_SIZE.Y,
+		Width:  config.METRICS_OBJECT_PLAYER_SIZE.X,
+		Height: config.METRICS_OBJECT_PLAYER_SIZE.Y,
 	}
 
 	player := player.New(config.OBJECT_PLAYER_NAME, rect, render.Green)
@@ -50,7 +50,7 @@ func drawShields() {
 		name := fmt.Sprintf(config.OBJECT_SHIELD_NAME, 0)
 		rect := utils.RectSpecs{
 			PosX:   x,
-			PosY:   config.SCREEN_SIZE.Y - config.METRICS_UI_PANEL_HEIGHT - (2 * config.METRICS_OBJECT_PLAYER_OFFSET) - config.METRICS_PLAYER_SIZE.Y - config.METRICS_OBJECT_SHIELD_SIZE.Y,
+			PosY:   config.SCREEN_SIZE.Y - config.METRICS_UI_PANEL_HEIGHT - (2 * config.METRICS_OBJECT_PLAYER_OFFSET) - config.METRICS_OBJECT_PLAYER_SIZE.Y - config.METRICS_OBJECT_SHIELD_SIZE.Y,
 			Width:  config.METRICS_OBJECT_SHIELD_SIZE.X,
 			Height: config.METRICS_OBJECT_SHIELD_SIZE.Y,
 		}
