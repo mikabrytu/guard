@@ -109,8 +109,8 @@ func (p *Player) move(axis int) {
 
 // TODO: Make shoot system so a player object doesn't have a bullet dependency
 func (p *Player) shoot() {
-	stamp := time.Now()
-	name := fmt.Sprintf("bullet-%v", stamp)
+	id := time.Now().Unix()
+	name := fmt.Sprintf("bullet-%v", id)
 
 	rect := utils.RectSpecs{
 		PosX:   p.rect.PosX + ((config.METRICS_OBJECT_PLAYER_SIZE.X / 2) - (config.METRICS_OBJECT_BULLET_PLAYER_SIZE.X / 2)),
@@ -119,7 +119,7 @@ func (p *Player) shoot() {
 		Height: config.METRICS_OBJECT_BULLET_PLAYER_SIZE.Y,
 	}
 
-	bullet := bullet.New(name, rect, render.Green)
+	bullet := bullet.New(name, rect, config.COLOR_OBJECT_PLAYER)
 	bullet.SetDirection(-1)
-	bullet.SetSpeed(config.OBJECT_BULLET_SPEED)
+	bullet.SetSpeed(config.OBJECT_BULLET_PLAYER_SPEED)
 }

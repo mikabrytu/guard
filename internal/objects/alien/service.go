@@ -1,7 +1,10 @@
 package alien
 
 import (
+	"fmt"
 	"littlejumbo/guard/config"
+	"littlejumbo/guard/internal/objects/bullet"
+	"time"
 
 	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/lifecycle"
@@ -55,6 +58,21 @@ func (a *Alien) DescendY() {
 	a.sprite.UpdateRect(a.rect)
 }
 
+func (a *Alien) Shoot() {
+	id := time.Now().Unix()
+	name := fmt.Sprintf(config.OBJECT_BULLET_ALIEN, a.Name, id)
+	rect := utils.RectSpecs{
+		PosX:   a.rect.PosX,
+		PosY:   a.rect.PosY,
+		Width:  config.METRICS_OBJECT_BULLET_ALIEN_SIZE.X,
+		Height: config.METRICS_OBJECT_BULLET_ALIEN_SIZE.Y,
+	}
+
+	bullet := bullet.New(name, rect, config.COLOR_OBJECT_ALIEN)
+	bullet.SetDirection(1)
+	bullet.SetSpeed(config.OBJECT_BULLET_ALIEN_SPEED)
+}
+
 func (a *Alien) IsAtScreenEdge() bool {
 	return (a.rect.PosX+a.rect.Width) > config.SCREEN_SIZE.X-config.SCREEN_OFFSET.X || a.rect.PosX < config.SCREEN_OFFSET.X
 }
@@ -89,4 +107,5 @@ func (a *Alien) render() {
 func (a *Alien) destroy() {
 	a.sprite.ClearSprite()
 	physics.RemoveBody(&a.body)
+	events.Emit(config.EVENTS_ALIEN_DESTROYED, a.Name)
 }
