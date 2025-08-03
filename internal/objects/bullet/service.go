@@ -3,7 +3,9 @@ package bullet
 import (
 	"littlejumbo/guard/config"
 
+	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/lifecycle"
+	"github.com/mikabrytu/gomes-engine/physics"
 	"github.com/mikabrytu/gomes-engine/render"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
@@ -16,8 +18,10 @@ func New(name string, rect utils.RectSpecs, color render.Color) *Bullet {
 	}
 
 	bullet.instance = lifecycle.Register(&lifecycle.GameObject{
-		Update: bullet.update,
-		Render: bullet.render,
+		Start:   bullet.start,
+		Physics: bullet.physics,
+		Render:  bullet.render,
+		Destroy: bullet.destroy,
 	})
 
 	return bullet
@@ -31,8 +35,18 @@ func (b *Bullet) SetSpeed(speed int) {
 	b.speed = speed
 }
 
-func (b *Bullet) update() {
+func (b *Bullet) start() {
+	b.body = physics.RegisterBody(&b.rect, b.Name)
+}
+
+func (b *Bullet) physics() {
 	b.rect.PosY += b.axis * b.speed
+
+	collision := physics.CheckCollision(&b.body)
+	if collision.Name != "nil" {
+		lifecycle.Stop(b.instance)
+		events.Emit(config.EVENTS_BULLET_HIT, collision.Name)
+	}
 
 	// TODO: Make a pooling system
 	if (b.rect.PosY+b.rect.Height) < 0 || b.rect.PosY > config.SCREEN_SIZE.Y {
@@ -42,4 +56,8 @@ func (b *Bullet) update() {
 
 func (b *Bullet) render() {
 	render.DrawRect(b.rect, b.color)
+}
+
+func (b *Bullet) destroy() {
+	physics.RemoveBody(&b.body)
 }
