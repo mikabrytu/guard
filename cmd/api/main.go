@@ -11,7 +11,6 @@ import (
 
 func main() {
 	gomesengine.Init(config.GAME_TITLE, int32(config.SCREEN_SIZE.X), int32(config.SCREEN_SIZE.Y))
-	lifecycle.SetSmoothStep(0.9)
 
 	settings()
 	scene.Init()
@@ -20,6 +19,8 @@ func main() {
 }
 
 func settings() {
+	lifecycle.SetSmoothStep(0.9)
+
 	events.Subscribe(events.INPUT_KEYBOARD_PRESSED_ESCAPE, func(params ...any) error {
 		lifecycle.Kill()
 		return nil

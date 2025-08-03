@@ -59,11 +59,13 @@ func (a *Alien) DescendY() {
 }
 
 func (a *Alien) Shoot() {
+	offset := 4
+
 	id := time.Now().Unix()
 	name := fmt.Sprintf(config.OBJECT_BULLET_ALIEN, a.Name, id)
 	rect := utils.RectSpecs{
-		PosX:   a.rect.PosX,
-		PosY:   a.rect.PosY,
+		PosX:   ((a.rect.PosX + a.rect.Width) / 2) - (config.METRICS_OBJECT_BULLET_ALIEN_SIZE.X / 2),
+		PosY:   a.rect.PosY + a.rect.Height + offset,
 		Width:  config.METRICS_OBJECT_BULLET_ALIEN_SIZE.X,
 		Height: config.METRICS_OBJECT_BULLET_ALIEN_SIZE.Y,
 	}

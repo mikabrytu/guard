@@ -1,9 +1,11 @@
 package alien
 
 import (
+	"container/list"
 	"fmt"
 	"littlejumbo/guard/config"
 	"littlejumbo/guard/internal/objects/alien"
+	"math/rand"
 	"regexp"
 	"strconv"
 	"time"
@@ -13,12 +15,13 @@ import (
 )
 
 var aliens [][]*alien.Alien
+var aggressive *list.List
 var moving bool
 var skip bool
 
-const MOVE_DELAY int = 1000
 const ROWS int = 5
 const COLS int = 11
+const AGGRESSIVE_MIN = 7
 
 func Init() {
 	moving = true
@@ -27,6 +30,7 @@ func Init() {
 	listen()
 	draw()
 	move()
+	shoot()
 }
 
 func listen() {
@@ -80,7 +84,7 @@ func draw() {
 }
 
 func move() {
-	time.AfterFunc(time.Duration(MOVE_DELAY)*time.Millisecond, func() {
+	time.AfterFunc(time.Duration(config.DELAY_ALIEN_MOVEMENT)*time.Millisecond, func() {
 		if !skip {
 			a := aliens[0][0]
 			b := aliens[0][COLS-1]
@@ -107,9 +111,26 @@ func move() {
 	})
 }
 
-func tryRemoveAlien(name string) {
-	fmt.Println(size())
+func shoot() {
+	time.AfterFunc(config.DELAY_ALIEN_SHOOT*time.Millisecond, func() {
+		updateAggressive()
 
+		id := rand.Intn(aggressive.Len())
+		index := 0
+		for e := aggressive.Front(); e != nil; e = e.Next() {
+			if index == id {
+				a := e.Value.(*alien.Alien)
+				a.Shoot()
+
+				shoot()
+				return
+			}
+			index++
+		}
+	})
+}
+
+func tryRemoveAlien(name string) {
 	re := regexp.MustCompile("[0-9]+")
 	search := re.FindAllString(name, -1)
 
@@ -133,8 +154,6 @@ func tryRemoveAlien(name string) {
 	} else {
 		aliens[index[0]][index[1]] = nil
 	}
-
-	fmt.Println(size())
 }
 
 func callFunc(callback func(*alien.Alien)) {
@@ -149,17 +168,34 @@ func callFunc(callback func(*alien.Alien)) {
 	}
 }
 
-func size() int {
-	total := 0
-	for i := range ROWS {
-		for j := range COLS {
-			if aliens[i][j] == nil {
-				continue
-			}
+func updateAggressive() {
+	if aggressive == nil {
+		aggressive = list.New()
+	}
 
-			total++
+	for e := aggressive.Front(); e != nil; e = e.Next() {
+		item := e.Value.(*alien.Alien)
+		if item == nil {
+			aggressive.Remove(e)
 		}
 	}
 
-	return total
+	bottom := ROWS - 1
+	stop := false
+
+	for aggressive.Len() < AGGRESSIVE_MIN || stop {
+		for _, a := range aliens[bottom] {
+			if a == nil {
+				continue
+			}
+
+			aggressive.PushBack(a)
+		}
+
+		bottom--
+
+		if bottom < 0 {
+			stop = true
+		}
+	}
 }
