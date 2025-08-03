@@ -6,7 +6,6 @@ import (
 	"littlejumbo/guard/internal/objects/alien"
 	"time"
 
-	"github.com/mikabrytu/gomes-engine/render"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
 
@@ -60,7 +59,7 @@ func draw() {
 				path = config.PATH_SPRITE_ALIEN_A
 			}
 
-			alien := alien.New(name, rect, render.White)
+			alien := alien.New(name, rect, config.COLOR_OBJECT_ALIEN)
 			alien.SetSprite(path)
 			alien.SetStep(config.OBJECT_ALIEN_STEP)
 			aliens[i][j] = alien

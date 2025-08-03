@@ -113,10 +113,10 @@ func (p *Player) shoot() {
 	name := fmt.Sprintf("bullet-%v", stamp)
 
 	rect := utils.RectSpecs{
-		PosX:   p.rect.PosX + ((config.METRICS_OBJECT_PLAYER_SIZE.X / 2) - (config.METRICS_OBJECT_BULLET_SIZE.X / 2)),
+		PosX:   p.rect.PosX + ((config.METRICS_OBJECT_PLAYER_SIZE.X / 2) - (config.METRICS_OBJECT_BULLET_PLAYER_SIZE.X / 2)),
 		PosY:   p.rect.PosY,
-		Width:  config.METRICS_OBJECT_BULLET_SIZE.X,
-		Height: config.METRICS_OBJECT_BULLET_SIZE.Y,
+		Width:  config.METRICS_OBJECT_BULLET_PLAYER_SIZE.X,
+		Height: config.METRICS_OBJECT_BULLET_PLAYER_SIZE.Y,
 	}
 
 	bullet := bullet.New(name, rect, render.Green)

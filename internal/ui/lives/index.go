@@ -32,7 +32,7 @@ func drawLives() {
 
 		lifecycle.Register(&lifecycle.GameObject{
 			Render: func() {
-				render.DrawRect(rect, render.Green)
+				render.DrawRect(rect, config.COLOR_UI_PLAYER)
 			},
 		})
 	}
@@ -48,7 +48,7 @@ func drawDivider() {
 
 	lifecycle.Register(&lifecycle.GameObject{
 		Render: func() {
-			render.DrawRect(rect, render.Green)
+			render.DrawRect(rect, config.COLOR_UI_DIVIDER)
 		},
 	})
 }
