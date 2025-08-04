@@ -2,6 +2,7 @@ package shield
 
 import (
 	"github.com/mikabrytu/gomes-engine/lifecycle"
+	"github.com/mikabrytu/gomes-engine/physics"
 	"github.com/mikabrytu/gomes-engine/render"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
@@ -15,6 +16,7 @@ func New(name string, rect utils.RectSpecs, color render.Color) *Shield {
 	}
 
 	lifecycle.Register(&lifecycle.GameObject{
+		Start:   shield.start,
 		Render:  shield.render,
 		Destroy: shield.destroy,
 	})
@@ -29,6 +31,14 @@ func (s *Shield) SetSprite(path string) {
 	s.sprite.Init(s.rect)
 }
 
+func (s *Shield) start() {
+	rect := s.rect
+	rect.Height -= 16 // TODO: Calculate this
+	rect.PosY += 16   // TODO: Calculate this
+
+	s.body = physics.RegisterBody(&rect, s.name)
+}
+
 func (s *Shield) render() {
 	if s.isSimple {
 		render.DrawRect(s.rect, s.color)
@@ -37,4 +47,5 @@ func (s *Shield) render() {
 
 func (s *Shield) destroy() {
 	s.sprite.ClearSprite()
+	physics.RemoveBody(&s.body)
 }
