@@ -10,6 +10,7 @@ import (
 
 	alien_manager "littlejumbo/guard/internal/managers/alien"
 
+	"github.com/mikabrytu/gomes-engine/render"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
 
@@ -31,7 +32,7 @@ func drawPlayer() {
 		Height: config.METRICS_OBJECT_PLAYER_SIZE.Y,
 	}
 
-	player := player.New(config.OBJECT_PLAYER_NAME, rect, config.COLOR_OBJECT_PLAYER)
+	player := player.New(config.OBJECT_PLAYER_NAME, rect, render.Red)
 	player.SetSprite(config.PATH_SPRITE_PLAYER)
 	player.SetSpeed(config.OBJECT_PLAYER_SPEED)
 }

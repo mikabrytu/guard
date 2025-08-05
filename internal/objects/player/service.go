@@ -8,6 +8,7 @@ import (
 
 	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/lifecycle"
+	"github.com/mikabrytu/gomes-engine/physics"
 	"github.com/mikabrytu/gomes-engine/render"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
@@ -22,7 +23,7 @@ func New(name string, rect utils.RectSpecs, color render.Color) *Player {
 
 	lifecycle.Register(&lifecycle.GameObject{
 		Start:   player.start,
-		Update:  player.update,
+		Physics: player.physics,
 		Render:  player.render,
 		Destroy: player.destroy,
 	})
@@ -42,13 +43,16 @@ func (p *Player) SetSpeed(speed int) {
 }
 
 func (p *Player) start() {
+	p.body = physics.RegisterBody(&p.rect, p.name)
+	p.updateBody()
 	p.listen()
 }
 
-func (p *Player) update() {
+func (p *Player) physics() {
 	if p.moving {
 		p.rect.PosX += p.speed * p.axis
 		p.sprite.UpdateRect(p.rect)
+		p.updateBody()
 	}
 }
 
@@ -60,6 +64,7 @@ func (p *Player) render() {
 
 func (p *Player) destroy() {
 	p.sprite.ClearSprite()
+	physics.RemoveBody(&p.body)
 }
 
 func (p *Player) listen() {
@@ -111,10 +116,9 @@ func (p *Player) move(axis int) {
 func (p *Player) shoot() {
 	id := time.Now().Unix()
 	name := fmt.Sprintf("bullet-%v", id)
-
 	rect := utils.RectSpecs{
 		PosX:   p.rect.PosX + ((config.METRICS_OBJECT_PLAYER_SIZE.X / 2) - (config.METRICS_OBJECT_BULLET_PLAYER_SIZE.X / 2)),
-		PosY:   p.rect.PosY,
+		PosY:   p.rect.PosY - config.METRICS_OBJECT_BULLET_PLAYER_SIZE.Y,
 		Width:  config.METRICS_OBJECT_BULLET_PLAYER_SIZE.X,
 		Height: config.METRICS_OBJECT_BULLET_PLAYER_SIZE.Y,
 	}
@@ -122,4 +126,12 @@ func (p *Player) shoot() {
 	bullet := bullet.New(name, rect, config.COLOR_OBJECT_PLAYER)
 	bullet.SetDirection(-1)
 	bullet.SetSpeed(config.OBJECT_BULLET_PLAYER_SPEED)
+}
+
+func (p *Player) updateBody() {
+	if p.body.Rect != &p.rect {
+		p.body.Rect = &p.rect
+		p.body.Rect.Height -= 16
+		p.body.Rect.PosY += 16
+	}
 }
