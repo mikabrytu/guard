@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"littlejumbo/guard/config"
 	"os"
+	"time"
 
+	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/math"
 	"github.com/mikabrytu/gomes-engine/render"
 	savesystem "github.com/mikabrytu/gomes-engine/systems/save"
@@ -18,9 +20,28 @@ var current int
 var high int
 
 func Init() {
+	listen()
 	loadFont()
 	loadData()
 	draw()
+}
+
+func listen() {
+	events.Subscribe(config.EVENTS_ALIEN_DESTROYED, func(params ...any) error {
+		points := params[0].([]any)[0].([]any)[1].(int)
+
+		current += points
+		text := fmt.Sprintf(config.UI_SCORE, current)
+		sFont.UpdateText(text)
+
+		return nil
+	})
+
+	events.Subscribe(config.EVENTS_GAME_OVER, func(params ...any) error {
+		saveData()
+
+		return nil
+	})
 }
 
 func loadFont() {
@@ -46,6 +67,16 @@ func loadData() {
 
 	current = 0
 	high = data.Score
+}
+
+func saveData() {
+	if current <= high {
+		return
+	}
+
+	data.Score = current
+	data.TimeStamp = time.Now()
+	savesystem.Save(data, config.PATH_SAVE_FILE)
 }
 
 func draw() {

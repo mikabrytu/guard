@@ -17,5 +17,6 @@ type Alien struct {
 	axis     math.Vector2
 	step     math.Vector2
 	Body     physics.RigidBody
+	score    int
 	isSimple bool
 }

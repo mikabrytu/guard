@@ -94,17 +94,22 @@ func draw() {
 			}
 
 			path := ""
+			score := 0
 			if i == 0 {
 				path = config.PATH_SPRITE_ALIEN_C
+				score = config.SCORE_VALUE_ALIEN_C
 			} else if i < 3 {
 				path = config.PATH_SPRITE_ALIEN_B
+				score = config.SCORE_VALUE_ALIEN_B
 			} else {
 				path = config.PATH_SPRITE_ALIEN_A
+				score = config.SCORE_VALUE_ALIEN_A
 			}
 
 			alien := alien.New(name, rect, config.COLOR_OBJECT_ALIEN)
 			alien.SetSprite(path)
 			alien.SetStep(config.OBJECT_ALIEN_STEP)
+			alien.SetScore(score)
 			aliens[i][j] = alien
 		}
 	}

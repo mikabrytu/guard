@@ -45,6 +45,10 @@ func (a *Alien) SetStep(step math.Vector2) {
 	a.step = step
 }
 
+func (a *Alien) SetScore(score int) {
+	a.score = score
+}
+
 func (a *Alien) MoveStep() {
 	a.rect.PosX += a.axis.X * a.step.X
 	a.sprite.UpdateRect(a.rect)
@@ -117,5 +121,5 @@ func (a *Alien) render() {
 func (a *Alien) destroy() {
 	a.sprite.ClearSprite()
 	physics.RemoveBody(&a.Body)
-	events.Emit(config.EVENTS_ALIEN_DESTROYED, a.Name)
+	events.Emit(config.EVENTS_ALIEN_DESTROYED, a.Name, a.score)
 }
