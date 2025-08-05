@@ -231,6 +231,4 @@ func updateAggressive() {
 
 		bottom--
 	}
-
-	fmt.Println(aggressive.Len())
 }

@@ -53,7 +53,11 @@ func (p *Player) physics() {
 	if p.moving {
 		p.rect.PosX += p.speed * p.axis
 		p.sprite.UpdateRect(p.rect)
-		p.updateBody()
+
+		if (p.rect.PosX+p.rect.Width) >= (config.SCREEN_SIZE.X-8) || p.rect.PosX <= 8 {
+			p.moving = false
+			p.move(0)
+		}
 	}
 }
 
@@ -73,31 +77,39 @@ func (p *Player) destroy() {
 }
 
 func (p *Player) listen() {
-	events.Subscribe(events.INPUT_KEYBOARD_PRESSED_A, func(params ...any) error {
-		if !p.moving {
-			p.move(-1)
-		}
-		return nil
-	})
-
 	events.Subscribe(events.INPUT_KEYBOARD_PRESSED_D, func(params ...any) error {
 		if !p.moving {
+			p.moving = true
 			p.move(1)
 		}
-		return nil
-	})
 
-	events.Subscribe(events.INPUT_KEYBOARD_RELEASED_A, func(params ...any) error {
-		if p.moving {
-			p.move(0)
-		}
 		return nil
 	})
 
 	events.Subscribe(events.INPUT_KEYBOARD_RELEASED_D, func(params ...any) error {
-		if p.moving {
+		if p.moving && p.axis == 1 {
+			p.moving = false
 			p.move(0)
 		}
+
+		return nil
+	})
+
+	events.Subscribe(events.INPUT_KEYBOARD_PRESSED_A, func(params ...any) error {
+		if !p.moving {
+			p.moving = true
+			p.move(-1)
+		}
+
+		return nil
+	})
+
+	events.Subscribe(events.INPUT_KEYBOARD_RELEASED_A, func(params ...any) error {
+		if p.moving && p.axis == -1 {
+			p.moving = false
+			p.move(0)
+		}
+
 		return nil
 	})
 
@@ -109,12 +121,6 @@ func (p *Player) listen() {
 
 func (p *Player) move(axis int) {
 	p.axis = axis
-
-	if axis == 0 {
-		p.moving = false
-	} else {
-		p.moving = true
-	}
 }
 
 // TODO: Make shoot system so a player object doesn't have a bullet dependency

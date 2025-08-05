@@ -15,6 +15,8 @@ func main() {
 	settings()
 	scene.Init()
 
+	//debug.EnableDebug()
+
 	gomesengine.Run()
 }
 
