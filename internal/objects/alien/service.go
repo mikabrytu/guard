@@ -6,6 +6,7 @@ import (
 	"littlejumbo/guard/internal/objects/bullet"
 	"time"
 
+	"github.com/mikabrytu/gomes-engine/debug"
 	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/lifecycle"
 	"github.com/mikabrytu/gomes-engine/math"
@@ -95,7 +96,10 @@ func (a *Alien) start() {
 func (a *Alien) physics() {
 	collision := physics.CheckCollision(&a.Body)
 	if collision.Name != "nil" {
-		println("Collision detected")
+		if debug.IsEnabled() {
+			println("Collision detected")
+		}
+
 		lifecycle.Stop(a.instance)
 	}
 }
@@ -105,7 +109,9 @@ func (a *Alien) render() {
 		render.DrawRect(a.rect, a.color)
 	}
 
-	//render.DrawRect(*a.Body.Rect, render.Red)
+	if debug.IsEnabled() {
+		render.DrawRect(*a.Body.Rect, config.COLOR_DEBUG)
+	}
 }
 
 func (a *Alien) destroy() {

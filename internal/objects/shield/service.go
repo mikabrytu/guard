@@ -1,6 +1,9 @@
 package shield
 
 import (
+	"littlejumbo/guard/config"
+
+	"github.com/mikabrytu/gomes-engine/debug"
 	"github.com/mikabrytu/gomes-engine/lifecycle"
 	"github.com/mikabrytu/gomes-engine/physics"
 	"github.com/mikabrytu/gomes-engine/render"
@@ -42,6 +45,10 @@ func (s *Shield) start() {
 func (s *Shield) render() {
 	if s.isSimple {
 		render.DrawRect(s.rect, s.color)
+	}
+
+	if debug.IsEnabled() {
+		render.DrawRect(*s.body.Rect, config.COLOR_DEBUG)
 	}
 }
 

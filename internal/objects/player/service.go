@@ -6,6 +6,7 @@ import (
 	"littlejumbo/guard/internal/objects/bullet"
 	"time"
 
+	"github.com/mikabrytu/gomes-engine/debug"
 	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/lifecycle"
 	"github.com/mikabrytu/gomes-engine/physics"
@@ -59,6 +60,10 @@ func (p *Player) physics() {
 func (p *Player) render() {
 	if p.isSimple {
 		render.DrawRect(p.rect, p.color)
+	}
+
+	if debug.IsEnabled() {
+		render.DrawRect(*p.body.Rect, config.COLOR_DEBUG)
 	}
 }
 
