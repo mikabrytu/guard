@@ -3,42 +3,74 @@ package score
 import (
 	"fmt"
 	"littlejumbo/guard/config"
+	"os"
 
 	"github.com/mikabrytu/gomes-engine/math"
 	"github.com/mikabrytu/gomes-engine/render"
+	savesystem "github.com/mikabrytu/gomes-engine/systems/save"
 	"github.com/mikabrytu/gomes-engine/ui"
 )
 
-var score *ui.Font
-var high *ui.Font
+var sFont *ui.Font
+var hFont *ui.Font
+var data Score
+var current int
+var high int
 
 func Init() {
-	load()
+	loadFont()
+	loadData()
 	draw()
 }
 
-func load() {
+func loadFont() {
 	specs := ui.FontSpecs{
 		Name: config.UI_FONT_NAME,
 		Path: config.PATH_FONT,
 		Size: config.METRICS_UI_FONT_SIZE,
 	}
 
-	score = ui.NewFont(specs, config.SCREEN_SIZE)
-	high = ui.NewFont(specs, config.SCREEN_SIZE)
+	sFont = ui.NewFont(specs, config.SCREEN_SIZE)
+	hFont = ui.NewFont(specs, config.SCREEN_SIZE)
+}
+
+func loadData() {
+	if !fileExists(config.PATH_SAVE_FILE) {
+		createFile(config.PATH_SAVE_FILE)
+	}
+
+	err := savesystem.Load(config.PATH_SAVE_FILE, &data)
+	if err != nil {
+		panic(err)
+	}
+
+	current = 0
+	high = data.Score
 }
 
 func draw() {
-	sText := fmt.Sprintf(config.UI_SCORE, 0)
-	hText := fmt.Sprintf(config.UI_HIGH_SCORE, 0)
+	sText := fmt.Sprintf(config.UI_SCORE, current)
+	hText := fmt.Sprintf(config.UI_HIGH_SCORE, high)
 	offset := math.Vector2{
 		X: config.METRICS_UI_FONT_OFFSET,
 		Y: config.METRICS_UI_FONT_OFFSET,
 	}
 
-	score.Init(sText, render.White, config.VEC2_ZERO)
-	score.AlignText(ui.TopLeft, offset)
+	sFont.Init(sText, render.White, config.VEC2_ZERO)
+	sFont.AlignText(ui.TopLeft, offset)
 
-	high.Init(hText, render.White, config.VEC2_ZERO)
-	high.AlignText(ui.TopRight, offset)
+	hFont.Init(hText, render.White, config.VEC2_ZERO)
+	hFont.AlignText(ui.TopRight, offset)
+}
+
+// TODO: Add this to the engine as an util
+func createFile(path string) {
+	var empty Score
+	savesystem.Save(empty, path)
+}
+
+// TODO: Add this to the engine as an util
+func fileExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil || !os.IsNotExist(err)
 }
