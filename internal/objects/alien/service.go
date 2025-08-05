@@ -64,7 +64,7 @@ func (a *Alien) Shoot() {
 	id := time.Now().Unix()
 	name := fmt.Sprintf(config.OBJECT_BULLET_ALIEN, a.Name, id)
 	rect := utils.RectSpecs{
-		PosX:   ((a.rect.PosX + a.rect.Width) / 2) - (config.METRICS_OBJECT_BULLET_ALIEN_SIZE.X / 2),
+		PosX:   a.rect.PosX + (a.rect.Width / 2) - (config.METRICS_OBJECT_BULLET_ALIEN_SIZE.X / 2),
 		PosY:   a.rect.PosY + a.rect.Height + offset,
 		Width:  config.METRICS_OBJECT_BULLET_ALIEN_SIZE.X,
 		Height: config.METRICS_OBJECT_BULLET_ALIEN_SIZE.Y,
@@ -80,7 +80,7 @@ func (a *Alien) IsAtScreenEdge() bool {
 }
 
 func (a *Alien) start() {
-	a.body = physics.RegisterBody(&a.rect, a.Name)
+	a.Body = physics.RegisterBody(&a.rect, a.Name)
 
 	events.Subscribe(config.EVENTS_BULLET_HIT, func(params ...any) error {
 		name := params[0].([]any)[0].([]any)[0].(string)
@@ -93,7 +93,7 @@ func (a *Alien) start() {
 }
 
 func (a *Alien) physics() {
-	collision := physics.CheckCollision(&a.body)
+	collision := physics.CheckCollision(&a.Body)
 	if collision.Name != "nil" {
 		println("Collision detected")
 		lifecycle.Stop(a.instance)
@@ -104,10 +104,12 @@ func (a *Alien) render() {
 	if a.isSimple {
 		render.DrawRect(a.rect, a.color)
 	}
+
+	//render.DrawRect(*a.Body.Rect, render.Red)
 }
 
 func (a *Alien) destroy() {
 	a.sprite.ClearSprite()
-	physics.RemoveBody(&a.body)
+	physics.RemoveBody(&a.Body)
 	events.Emit(config.EVENTS_ALIEN_DESTROYED, a.Name)
 }

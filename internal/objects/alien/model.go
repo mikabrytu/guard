@@ -16,6 +16,6 @@ type Alien struct {
 	sprite   *render.Sprite
 	axis     math.Vector2
 	step     math.Vector2
-	body     physics.RigidBody
+	Body     physics.RigidBody
 	isSimple bool
 }
