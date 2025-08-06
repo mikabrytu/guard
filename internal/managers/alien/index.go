@@ -19,6 +19,9 @@ import (
 
 var aliens [][]*alien.Alien
 var aggressive *list.List
+var moveTimer *time.Timer
+var shootTimer *time.Timer
+var running bool
 var moving bool
 var skip bool
 
@@ -27,6 +30,7 @@ const COLS int = 11
 const AGGRESSIVE_MIN = 7
 
 func Init() {
+	running = true
 	moving = true
 	skip = false
 
@@ -42,6 +46,10 @@ func Init() {
 
 func listen() {
 	events.Subscribe(config.EVENTS_ALIEN_DESTROYED, func(params ...any) error {
+		if !running {
+			return nil
+		}
+
 		name := params[0].([]any)[0].([]any)[0].(string)
 
 		re := regexp.MustCompile("[0-9]+")
@@ -63,6 +71,16 @@ func listen() {
 
 		tryRemoveAlien(index)
 		tryRemoveAggresive(name)
+
+		return nil
+	})
+
+	events.Subscribe(config.EVENTS_GAME_OVER, func(params ...any) error {
+		moveTimer.Stop()
+		shootTimer.Stop()
+		aliens = nil
+		aggressive = list.New()
+		running = false
 
 		return nil
 	})
@@ -116,7 +134,11 @@ func draw() {
 }
 
 func move() {
-	time.AfterFunc(time.Duration(config.DELAY_ALIEN_MOVEMENT)*time.Millisecond, func() {
+	moveTimer = time.AfterFunc(time.Duration(config.DELAY_ALIEN_MOVEMENT)*time.Millisecond, func() {
+		if !running {
+			return
+		}
+
 		if !skip {
 			a := aliens[0][0]
 			b := aliens[0][COLS-1]
@@ -144,7 +166,11 @@ func move() {
 }
 
 func shoot() {
-	time.AfterFunc(config.DELAY_ALIEN_SHOOT*time.Millisecond, func() {
+	shootTimer = time.AfterFunc(config.DELAY_ALIEN_SHOOT*time.Millisecond, func() {
+		if !running {
+			return
+		}
+
 		updateAggressive()
 
 		id := rand.Intn(aggressive.Len())

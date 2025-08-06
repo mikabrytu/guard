@@ -3,16 +3,41 @@ package lives
 import (
 	"littlejumbo/guard/config"
 
+	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/lifecycle"
 	"github.com/mikabrytu/gomes-engine/render"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
 
+var lives [3]*lifecycle.GameObject
+var current int
+
 const max int = 3
 
 func Init() {
+	current = max
+
 	drawLives()
 	drawDivider()
+	listen()
+}
+
+func listen() {
+	events.Subscribe(config.EVENTS_PLAYER_HIT, func(params ...any) error {
+		if current <= 0 {
+			return nil
+		}
+
+		current--
+
+		if current == 0 {
+			events.Emit(config.EVENTS_GAME_OVER)
+		} else {
+			lifecycle.Disable(lives[current])
+		}
+
+		return nil
+	})
 }
 
 func drawLives() {
@@ -30,7 +55,7 @@ func drawLives() {
 			Height: config.METRICS_OBJECT_PLAYER_SIZE.Y,
 		}
 
-		lifecycle.Register(&lifecycle.GameObject{
+		lives[i] = lifecycle.Register(&lifecycle.GameObject{
 			Render: func() {
 				render.DrawRect(rect, config.COLOR_UI_PLAYER)
 			},

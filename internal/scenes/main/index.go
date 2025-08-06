@@ -10,7 +10,6 @@ import (
 
 	alien_manager "littlejumbo/guard/internal/managers/alien"
 
-	"github.com/mikabrytu/gomes-engine/events"
 	"github.com/mikabrytu/gomes-engine/render"
 	"github.com/mikabrytu/gomes-engine/utils"
 )
@@ -23,11 +22,6 @@ func Init() {
 	drawShields()
 
 	alien_manager.Init()
-
-	events.Subscribe(events.INPUT_MOUSE_CLICK_DOWN, func(params ...any) error {
-		events.Emit(config.EVENTS_GAME_OVER)
-		return nil
-	})
 }
 
 func drawPlayer() {

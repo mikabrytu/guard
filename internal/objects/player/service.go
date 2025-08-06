@@ -45,7 +45,6 @@ func (p *Player) SetSpeed(speed int) {
 
 func (p *Player) start() {
 	p.body = physics.RegisterBody(&p.rect, p.name)
-	p.updateBody()
 	p.listen()
 }
 
@@ -115,6 +114,15 @@ func (p *Player) listen() {
 
 	events.Subscribe(events.INPUT_KEYBOARD_PRESSED_SPACE, func(params ...any) error {
 		p.shoot()
+		return nil
+	})
+
+	events.Subscribe(config.EVENTS_BULLET_HIT, func(params ...any) error {
+		name := params[0].([]any)[0].([]any)[0].(string)
+		if name == p.name {
+			events.Emit(config.EVENTS_PLAYER_HIT)
+		}
+
 		return nil
 	})
 }
